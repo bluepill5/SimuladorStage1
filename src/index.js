@@ -111,12 +111,6 @@ const calculoClick = (event) => {
   }
 
   $('#main').append(nuevaSeccion);
-
-  // Ingresamos los datos
-  bancoHTML.value = banco;
-  tasaHTML.value = tasa;
-  horizonteHTML.value = horizonte;
-  montoHTML.value = monto;
 };
 
 // buttonCalc.addEventListener("click", calculoClick);
