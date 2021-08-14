@@ -27,13 +27,16 @@ const creaCard = (mes, monto, element) => {
     card.innerHTML = `<h2>Mes: ${mes}</h2>
     <h3>Pago: ${monto}</h3>`;
 
-    element.appendChild(card);
+    $(element).append(card);
 }
 
 // Datos
-const main = document.getElementById('main');
-const buttonCalc = document.getElementById('btnCalculo');
-const form = document.getElementById('data-form');
+//const main = document.getElementById('main');
+// const buttonCalc = document.getElementById('btnCalculo');
+// const form = document.getElementById('data-form');
+const main = $('#main');
+const buttonCalc = $('#btnCalculo');
+const form = $('#data-form');
 
 // Creamos una nueva sección cotenendora
 nuevaSeccion = document.createElement('section');
@@ -45,16 +48,24 @@ const horizonteHTML = document.getElementById('Horizonte');
 const montoHTML = document.getElementById('Monto');
 
 
+// Local Session
+for (var i = 0; i < localStorage.length; i++) {
+    let keyVal = localStorage.key(i);
+    creaCard(i + 1, localStorage.getItem(i + 1), nuevaSeccion);
+    $('#main').append(nuevaSeccion);
+}
+
 // Listeners
 const calculoClick = (event) => {
   event.preventDefault();
   // Borramos si ya se hizo una simulacion
-  let cardsHTML = document.getElementsByClassName('card');
+  localStorage.clear();
+  let cardsHTML = document.getElementsByClassName("card");
 
   if (cardsHTML.length > 0) {
-      while (cardsHTML[0]) {
-        cardsHTML[0].remove();
-      }
+    while (cardsHTML[0]) {
+      cardsHTML[0].remove();
+    }
   }
   // Datos
   let banco = bancoHTML.value;
@@ -63,46 +74,47 @@ const calculoClick = (event) => {
   let monto = parseFloat(montoHTML.value);
   // calculo
   // Validamos la tasa y el horizonte de tiempo
-  const alertMessage = document.createElement('div');
+  const alertMessage = document.createElement("div");
   if (Number.isNaN(tasa) || Number.isNaN(horizonte) || Number.isNaN(monto)) {
-    alertMessage.className = 'alert alert-danger';
-    alertMessage.innerHTML = 'Faltan campos';
-    form.appendChild(alertMessage);
+    alertMessage.className = "alert alert-danger";
+    alertMessage.innerHTML = "Faltan campos";
+    form.append(alertMessage);
     // Eliminamos la alerta
-    const alertHTML = document.getElementsByClassName('alert')[0];
+    const alertHTML = $('.alert')[0];
     setTimeout(function () {
       alertHTML.remove();
     }, 1000);
   } else {
     if (tasa === 0) {
-        alertMessage.className = 'alert alert-danger';
-        alertMessage.innerHTML =
-          'Lo sentimos pero no se tienen créditos a tasa cero.';
-        form.appendChild(alertMessage);
-        // Eliminamos la alerta
-        const alertHTML = document.getElementsByClassName('alert')[0];
-        setTimeout(function () {
-          alertHTML.remove();
-        }, 1000);
+      alertMessage.className = "alert alert-danger";
+      alertMessage.innerHTML =
+        "Lo sentimos pero no se tienen créditos a tasa cero.";
+      form.append(alertMessage);
+      // Eliminamos la alerta
+      const alertHTML = $('.alert')[0];
+      setTimeout(function () {
+        alertHTML.remove();
+      }, 1000);
     } else {
       totalPayment = paymentFun(monto, tasa, horizonte).toFixed(2);
 
-      alertMessage.className = 'alert alert-success';
+      alertMessage.className = "alert alert-success";
       alertMessage.innerHTML = `Gracias, el Banco ${banco} tiene el producto XXXX a una tasa del ${tasa}% Usted terminaría pagando ${totalPayment}`;
-      form.appendChild(alertMessage);
+      form.append(alertMessage);
       // Eliminamos la alerta
-      const alertHTML = document.getElementsByClassName('alert')[0];
+      const alertHTML = $('.alert')[0];
       setTimeout(function () {
         alertHTML.remove();
       }, 10000);
 
       simulationPayments(monto, tasa, horizonte).forEach((payment, index) => {
         creaCard(index + 1, payment, nuevaSeccion);
+        localStorage.setItem(index + 1, payment);
       });
     }
-  };
+  }
 
-  main.appendChild(nuevaSeccion);
+  $('#main').append(nuevaSeccion);
 
   // Ingresamos los datos
   bancoHTML.value = banco;
@@ -111,11 +123,6 @@ const calculoClick = (event) => {
   montoHTML.value = monto;
 };
 
-
-buttonCalc.addEventListener('click', calculoClick);
-
-
-
-
-
+// buttonCalc.addEventListener("click", calculoClick);
+buttonCalc.on('click', calculoClick);
 
