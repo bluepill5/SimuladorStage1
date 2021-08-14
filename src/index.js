@@ -31,9 +31,6 @@ const creaCard = (mes, monto, element) => {
 }
 
 // Datos
-//const main = document.getElementById('main');
-// const buttonCalc = document.getElementById('btnCalculo');
-// const form = document.getElementById('data-form');
 const main = $('#main');
 const buttonCalc = $('#btnCalculo');
 const form = $('#data-form');
@@ -42,11 +39,10 @@ const form = $('#data-form');
 nuevaSeccion = document.createElement('section');
 
 // Accedemos a algunos elementos
-const bancoHTML = document.getElementById('Banco');
-const tasaHTML = document.getElementById('Tasa');
-const horizonteHTML = document.getElementById('Horizonte');
-const montoHTML = document.getElementById('Monto');
-
+const bancoHTML = $('#Banco');
+const tasaHTML = $('#Tasa');
+const horizonteHTML = $('#Horizonte');
+const montoHTML = $('#Monto');
 
 // Local Session
 for (var i = 0; i < localStorage.length; i++) {
@@ -68,10 +64,10 @@ const calculoClick = (event) => {
     }
   }
   // Datos
-  let banco = bancoHTML.value;
-  let tasa = parseFloat(tasaHTML.value);
-  let horizonte = parseFloat(horizonteHTML.value);
-  let monto = parseFloat(montoHTML.value);
+  let banco = bancoHTML.val();
+  let tasa = parseFloat(tasaHTML.val());
+  let horizonte = parseFloat(horizonteHTML.val());
+  let monto = parseFloat(montoHTML.val());
   // calculo
   // Validamos la tasa y el horizonte de tiempo
   const alertMessage = document.createElement("div");
