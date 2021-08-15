@@ -28,7 +28,7 @@ class SimuladorPagos {
   }
 
   // Setters
-  
+
   // Methods
   // Pagos
   payment(horizonteVal) {
@@ -72,12 +72,6 @@ const form = $('#data-form');
 // Creamos una nueva sección cotenendora
 nuevaSeccion = document.createElement('section');
 
-// Accedemos a algunos elementos
-const bancoHTML = $('#Banco');
-const tasaHTML = $('#Tasa');
-const horizonteHTML = $('#Horizonte');
-const montoHTML = $('#Monto');
-
 // Local Session
 for (var i = 0; i < localStorage.length; i++) {
     let keyVal = localStorage.key(i);
@@ -98,10 +92,11 @@ const calculoClick = (event) => {
     }
   }
   // Datos
-  let banco = bancoHTML.val();
-  let tasa = parseFloat(tasaHTML.val());
-  let horizonte = parseFloat(horizonteHTML.val());
-  let monto = parseFloat(montoHTML.val());
+  // Accedemos a algunos elementos
+  let banco = $('#Banco').val();
+  let tasa = parseFloat($('#Tasa').val());
+  let horizonte = parseFloat($('#Horizonte').val());
+  let monto = parseFloat($('#Monto').val());
   
   let simulacion = new SimuladorPagos(
     banco,
@@ -109,7 +104,7 @@ const calculoClick = (event) => {
     horizonte,
     monto
   );
-  // calculo
+  // Calculo
   // Validamos la tasa y el horizonte de tiempo
   const alertMessage = document.createElement("div");
   if (Number.isNaN(simulacion.tasa) || Number.isNaN(simulacion.horizonte) || Number.isNaN(simulacion.monto)) {
