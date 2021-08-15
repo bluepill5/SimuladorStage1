@@ -2,22 +2,56 @@
     Simulador de créditos
 */
 
-// Funciones auxiliares
-// Pagos
-const paymentFun = (monto, tasa, horizonte) => {
-    return (monto * ((1 + (tasa/100))**horizonte)) - monto;
-};
+// Clases
+class SimuladorPagos {
+  constructor (banco, tasa, horizonte, monto) {
+    this._banco = banco;
+    this._tasa = tasa;
+    this._horizonte = horizonte;
+    this._monto = monto;
+  }
+  // Getters
+  get banco() {
+    return this._banco;
+  }
 
-// Simulacion de pagos
-const simulationPayments = (monto, tasa, horizonte) => {
+  get tasa() {
+    return this._tasa;
+  }
+
+  get horizonte() {
+    return this._horizonte;
+  }
+
+  get monto() {
+    return this._monto;
+  }
+
+  // Setters
+  
+  // Methods
+  // Pagos
+  payment(horizonteVal) {
+    return ((this._monto * ((1 + (this._tasa/100))**horizonteVal)) - this._monto).toFixed(2);
+  }
+
+  // Pago total
+  totalPayment() {
+    return this.payment(this._horizonte);
+  }
+
+  // Simulacion de pagos
+  simulationPayments() {
     let payments = [];
-    for (i = 0; i < horizonte; i++) {
-        payment = paymentFun(monto, tasa, i).toFixed(2);
-        payments.push(payment);
+    for (let i = 0; i < this._horizonte; i++) {
+      let paymentVal = this.payment(i);
+      payments.push(paymentVal);
     }
     return payments;
-};
+  }
+}
 
+// Funciones auxiliares
 // Crea cards
 const creaCard = (mes, monto, element) => {
     const card = document.createElement('div');
@@ -68,10 +102,17 @@ const calculoClick = (event) => {
   let tasa = parseFloat(tasaHTML.val());
   let horizonte = parseFloat(horizonteHTML.val());
   let monto = parseFloat(montoHTML.val());
+  
+  let simulacion = new SimuladorPagos(
+    banco,
+    tasa,
+    horizonte,
+    monto
+  );
   // calculo
   // Validamos la tasa y el horizonte de tiempo
   const alertMessage = document.createElement("div");
-  if (Number.isNaN(tasa) || Number.isNaN(horizonte) || Number.isNaN(monto)) {
+  if (Number.isNaN(simulacion.tasa) || Number.isNaN(simulacion.horizonte) || Number.isNaN(simulacion.monto)) {
     alertMessage.className = "alert alert-danger";
     alertMessage.innerHTML = "Faltan campos";
     form.append(alertMessage);
@@ -92,7 +133,7 @@ const calculoClick = (event) => {
         alertHTML.remove();
       }, 1000);
     } else {
-      totalPayment = paymentFun(monto, tasa, horizonte).toFixed(2);
+      totalPayment = simulacion.totalPayment();
 
       alertMessage.className = "alert alert-success";
       alertMessage.innerHTML = `Gracias, el Banco ${banco} tiene el producto XXXX a una tasa del ${tasa}% Usted terminaría pagando ${totalPayment}`;
@@ -103,7 +144,7 @@ const calculoClick = (event) => {
         alertHTML.remove();
       }, 10000);
 
-      simulationPayments(monto, tasa, horizonte).forEach((payment, index) => {
+      simulacion.simulationPayments().forEach((payment, index) => {
         creaCard(index + 1, payment, nuevaSeccion);
         localStorage.setItem(index + 1, payment);
       });
