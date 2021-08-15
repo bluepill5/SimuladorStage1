@@ -28,6 +28,22 @@ class SimuladorPagos {
   }
 
   // Setters
+  set banco(newBanco) {
+    this._banco = newBanco;
+  }
+
+  set tasa(newTasa) {
+    this._tasa = newTasa;
+  }
+
+  set horizonte(newHorizonte) {
+    this._horizonte = newHorizonte;
+  }
+
+  set monto(newMonto) {
+    this._monto = newMonto;
+  }
+
 
   // Methods
   // Pagos
