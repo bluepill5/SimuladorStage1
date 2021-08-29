@@ -1,4 +1,4 @@
-/* 
+/*
     Simulador de créditos
 */
 
@@ -80,6 +80,12 @@ const creaCard = (mes, monto, element) => {
     $(element).append(card);
 }
 
+const randomInteger = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 // Datos
 const main = $('#main');
 const buttonCalc = $('#btnCalculo');
@@ -113,7 +119,7 @@ const calculoClick = (event) => {
   let tasa = parseFloat($('#Tasa').val());
   let horizonte = parseFloat($('#Horizonte').val());
   let monto = parseFloat($('#Monto').val());
-  
+
   let simulacion = new SimuladorPagos(
     banco,
     tasa,
@@ -167,4 +173,34 @@ const calculoClick = (event) => {
 
 // buttonCalc.addEventListener("click", calculoClick);
 buttonCalc.on('click', calculoClick);
+
+$(document).ready(function () {
+  // GET Rick and Morty API
+  const URL = "https://rickandmortyapi.com/api/character";
+  results_get = [];
+  $.ajax({
+    url: URL, 
+    async: true,
+    dataType: 'json',
+    success: function(data) {
+      results_get.push(data.results);
+    },
+    error: function() {
+      results_get.push({"name": " ... "});
+    }
+  });
+
+  setTimeout(function() {
+    let index = randomInteger(0, 19);
+    console.log(results_get[0][index].name);
+  }, 1000);
+
+  // Animaciones
+  $("#bp5").toggle(4000);
+  $("#btnCalculo").click(function () {
+    let index = randomInteger(0, 19);
+    $("#img-circle").attr('src', results_get[0][index].image);
+  });
+});
+
 
