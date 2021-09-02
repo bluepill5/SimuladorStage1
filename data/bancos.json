@@ -1,0 +1,50 @@
+[
+    {
+        "name": "Bancomer",
+        "productos": {
+            "Bancomer1": 5,
+            "Bancomer2": 10,
+            "Bancomer3": 15
+        }
+    },
+    {
+        "name": "Banamex",
+        "productos": {
+            "Banamex1": 5,
+            "Banamex2": 10,
+            "Banamex3": 15
+        }
+    },
+    {
+        "name": "Banorte",
+        "productos": {
+            "Banorte1": 5,
+            "Banorte2": 10,
+            "Banorte3": 15
+        }
+    },
+    {
+        "name": "Inbursa",
+        "productos": {
+            "Inbursa1": 5,
+            "Inbursa2": 10,
+            "Inbursa3": 15
+        }
+    },
+    {
+        "name": "Azteca",
+        "productos": {
+            "Azteca1": 5,
+            "Azteca2": 10,
+            "Azteca3": 15
+        }
+    },
+    {
+        "name": "Compartamos",
+        "productos": {
+            "Compartamos1": 5,
+            "Compartamos2": 10,
+            "Compartamos3": 15
+        }
+    }
+]

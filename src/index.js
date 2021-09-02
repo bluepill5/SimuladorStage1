@@ -201,6 +201,41 @@ $(document).ready(function () {
     let index = randomInteger(0, 19);
     $("#img-circle").attr('src', results_get[0][index].image);
   });
+
+  // JSON
+  const URL_BANCOS = 'https://raw.githubusercontent.com/bluepill5/JSONFiles/main/bancos.json';
+  // Banco
+  let banco_dropdown = $('#Banco');
+  banco_dropdown.empty();
+  banco_dropdown.append('<option selected="true" disabled>Seleccionar Banco</option>');
+  banco_dropdown.prop('selectedIndex', 0);
+
+  // Producto
+  let producto_dropdown = $('#Producto');
+  producto_dropdown.empty();
+  producto_dropdown.append('<option selected="true" disabled>Seleccionar Producto</option>');
+
+  $.getJSON(URL_BANCOS, (data) => {
+    $.each(data, (key, entry) => {
+      banco_dropdown.append($('<option></option>').attr('value', entry.abbreviation).text(entry.name));
+    });
+  });
+
+  $('#Banco').change(() => {
+    $.getJSON(URL_BANCOS, (data) => {
+      let banco = $('#Banco').val();
+      producto_dropdown.empty();
+      producto_dropdown.append('<option selected="true" disabled>Seleccionar Producto</option>');
+      $.each(data, (key, entry) => {
+        if (entry.name === banco) {
+          $.each(entry.productos, (key, product) => {
+            producto_dropdown.append($('<option></option>').attr('value', product.abbreviation).text(key));
+          });
+        }
+      });
+    });
+  });
+  
 });
 
 
