@@ -3,6 +3,7 @@
 */
 
 // Clases
+// Credito
 class SimuladorPagos {
   constructor (banco, tasa, horizonte, monto) {
     this._banco = banco;
@@ -14,15 +15,12 @@ class SimuladorPagos {
   get banco() {
     return this._banco;
   }
-
   get tasa() {
     return this._tasa;
   }
-
   get horizonte() {
     return this._horizonte;
   }
-
   get monto() {
     return this._monto;
   }
@@ -31,19 +29,15 @@ class SimuladorPagos {
   set banco(newBanco) {
     this._banco = newBanco;
   }
-
   set tasa(newTasa) {
     this._tasa = newTasa;
   }
-
   set horizonte(newHorizonte) {
     this._horizonte = newHorizonte;
   }
-
   set monto(newMonto) {
     this._monto = newMonto;
   }
-
 
   // Methods
   // Pagos
@@ -67,7 +61,70 @@ class SimuladorPagos {
   }
 }
 
+// Producto
+class Producto {
+  constructor(banco, nombre, tasa, plazo, monto) {
+    this._banco = banco;
+    this._nombre = nombre;
+    this._tasa = tasa;
+    this._plazo = plazo;
+    this._monto = monto;
+  }
+  // Getters
+  get banco() {
+    return this._banco;
+  }
+  get nombre() {
+    return this._nombre;
+  }
+  get tasa() {
+    return this._tasa
+  }
+  get plazo() {
+    return this._plazo;
+  }
+  get monto() {
+    return this._monto;
+  }
+
+  // Setters
+  set banco(newBanco) {
+    this._banco = newBanco;
+  }
+  set nombre(newNombre) {
+    this._nombre = newNombre;
+  }
+  set tasa(newTasa) {
+    this._tasa = newTasa;
+  }
+  set plazo(newPlazo) {
+    this._plazo = newPlazo;
+  }
+  set monto(newMonto) {
+    this._monto = newMonto;
+  }
+
+  // Methods
+  crearCard (mes, payment, element) {
+    const card = document.createElement('div');
+
+    card.className = 'card m-2 p-3';
+
+    card.innerHTML = `<h2>Mes: ${mes}</h2>
+    <h3>Pago: ${payment}</h3>`
+
+    $(element).append(card);
+  }
+} 
+
 // Funciones auxiliares
+// Numero aleatorio
+const randomInteger = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 // Crea cards
 const creaCard = (mes, monto, element) => {
     const card = document.createElement('div');
@@ -80,11 +137,6 @@ const creaCard = (mes, monto, element) => {
     $(element).append(card);
 }
 
-const randomInteger = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 // Datos
 const main = $('#main');
@@ -95,10 +147,19 @@ const form = $('#data-form');
 nuevaSeccion = document.createElement('section');
 
 // Local Session
-for (var i = 0; i < localStorage.length; i++) {
-    let keyVal = localStorage.key(i);
-    creaCard(i + 1, localStorage.getItem(i + 1), nuevaSeccion);
+if (localStorage.getItem('Producto')) {
+  var productoJSON = JSON.parse(localStorage.getItem('Producto'));
+  var payments_ls = JSON.parse('[' + localStorage.getItem('Payments') + ']');
+  var producto_Local = new Producto(
+    productoJSON._banco, 
+    productoJSON._nombre, 
+    productoJSON._tasa, 
+    productoJSON._plazo, 
+    productoJSON._monto);
+  for (var i = 0; i < payments_ls.length; i++) {
+    producto_Local.crearCard(i + 1, payments_ls[i], nuevaSeccion)
     $('#main').append(nuevaSeccion);
+  }
 }
 
 // Listeners
@@ -116,6 +177,7 @@ const calculoClick = (event) => {
   // Datos
   // Accedemos a algunos elementos
   let banco = $('#Banco').val();
+  let nombre = $('#Producto').val();
   let tasa = parseFloat($('#Tasa').val());
   let horizonte = parseFloat($('#Horizonte').val());
   let monto = parseFloat($('#Monto').val());
@@ -126,6 +188,15 @@ const calculoClick = (event) => {
     horizonte,
     monto
   );
+
+  let producto = new Producto(
+    banco, 
+    nombre,
+    tasa,
+    horizonte ,
+    monto
+  );
+
   // Calculo
   // Validamos la tasa y el horizonte de tiempo
   const alertMessage = document.createElement("div");
@@ -153,7 +224,7 @@ const calculoClick = (event) => {
       totalPayment = simulacion.totalPayment();
 
       alertMessage.className = "alert alert-success";
-      alertMessage.innerHTML = `Gracias, el Banco ${banco} tiene el producto XXXX a una tasa del ${tasa}% Usted terminaría pagando ${totalPayment}`;
+      alertMessage.innerHTML = `Gracias, el Banco ${banco} tiene el producto ${nombre} a una tasa del ${tasa}% Usted terminaría pagando ${totalPayment}`;
       form.append(alertMessage);
       // Eliminamos la alerta
       const alertHTML = $('.alert')[0];
@@ -161,10 +232,17 @@ const calculoClick = (event) => {
         alertHTML.remove();
       }, 10000);
 
+      let payment_loc = [];
+
       simulacion.simulationPayments().forEach((payment, index) => {
-        creaCard(index + 1, payment, nuevaSeccion);
+        producto.crearCard(index, payment, nuevaSeccion);
+        payment_loc.push(payment);
         localStorage.setItem(index + 1, payment);
+        localStorage.setItem("Producto", JSON.stringify(producto));
       });
+
+      localStorage.setItem("Payments", payment_loc);
+
     }
   }
 
