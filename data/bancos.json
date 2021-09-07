@@ -2,49 +2,49 @@
     {
         "name": "Bancomer",
         "productos": {
-            "Bancomer1": 5,
-            "Bancomer2": 10,
-            "Bancomer3": 15
+            "Bancomer1": {"Tasa": [3, 15], "Plazo": [1, 120], "Monto": [1000, 1000000]},
+            "Bancomer2": {"Tasa": [3, 45], "Plazo": [1, 220], "Monto": [1000, 1000000]},
+            "Bancomer3": {"Tasa": [3, 70], "Plazo": [1, 210], "Monto": [1000, 1000000]}
         }
     },
     {
         "name": "Banamex",
         "productos": {
-            "Banamex1": 5,
-            "Banamex2": 10,
-            "Banamex3": 15
+            "Banamex1": {"Tasa": [3, 15], "Plazo": [1, 120], "Monto": [1000, 1000000]},
+            "Banamex2": {"Tasa": [3, 50], "Plazo": [1, 140], "Monto": [1000, 1000000]},
+            "Banamex3": {"Tasa": [3, 85], "Plazo": [1, 120], "Monto": [1000, 1000000]}
         }
     },
     {
         "name": "Banorte",
         "productos": {
-            "Banorte1": 5,
-            "Banorte2": 10,
-            "Banorte3": 15
+            "Banorte1": {"Tasa": [3, 15], "Plazo": [1, 120], "Monto": [1000, 1000000]},
+            "Banorte2": {"Tasa": [3, 20], "Plazo": [1, 360], "Monto": [1000, 1000000]},
+            "Banorte3": {"Tasa": [3, 25], "Plazo": [1, 248], "Monto": [1000, 1000000]}
         }
     },
     {
         "name": "Inbursa",
         "productos": {
-            "Inbursa1": 5,
-            "Inbursa2": 10,
-            "Inbursa3": 15
+            "Inbursa1": {"Tasa": [3, 25], "Plazo": [1, 120], "Monto": [1000, 1000000]},
+            "Inbursa2": {"Tasa": [3, 10], "Plazo": [1, 100], "Monto": [1000, 1000000]},
+            "Inbursa3": {"Tasa": [3, 40], "Plazo": [1, 240], "Monto": [1000, 1000000]}
         }
     },
     {
         "name": "Azteca",
         "productos": {
-            "Azteca1": 5,
-            "Azteca2": 10,
-            "Azteca3": 15
+            "Azteca1": {"Tasa": [3, 85], "Plazo": [1, 120], "Monto": [100, 100000]},
+            "Azteca2": {"Tasa": [3, 75], "Plazo": [1, 240], "Monto": [100, 100000]},
+            "Azteca3": {"Tasa": [3, 115], "Plazo": [1, 380], "Monto": [100, 100000]}
         }
     },
     {
         "name": "Compartamos",
         "productos": {
-            "Compartamos1": 5,
-            "Compartamos2": 10,
-            "Compartamos3": 15
+            "Compartamos1": {"Tasa": [3, 115], "Plazo": [1, 120], "Monto": [100, 100000]},
+            "Compartamos2": {"Tasa": [3, 120], "Plazo": [1, 240], "Monto": [100, 100000]},
+            "Compartamos3": {"Tasa": [3, 95], "Plazo": [1, 320], "Monto": [100, 100000]}
         }
     }
 ]

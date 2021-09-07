@@ -115,7 +115,7 @@ class Producto {
 
     $(element).append(card);
   }
-} 
+}
 
 // Funciones auxiliares
 // Numero aleatorio
@@ -151,10 +151,10 @@ if (localStorage.getItem('Producto')) {
   var productoJSON = JSON.parse(localStorage.getItem('Producto'));
   var payments_ls = JSON.parse('[' + localStorage.getItem('Payments') + ']');
   var producto_Local = new Producto(
-    productoJSON._banco, 
-    productoJSON._nombre, 
-    productoJSON._tasa, 
-    productoJSON._plazo, 
+    productoJSON._banco,
+    productoJSON._nombre,
+    productoJSON._tasa,
+    productoJSON._plazo,
     productoJSON._monto);
   for (var i = 0; i < payments_ls.length; i++) {
     producto_Local.crearCard(i + 1, payments_ls[i], nuevaSeccion)
@@ -182,6 +182,14 @@ const calculoClick = (event) => {
   let horizonte = parseFloat($('#Horizonte').val());
   let monto = parseFloat($('#Monto').val());
 
+  // Minimos y maximos
+  let tasaMin = $('#Tasa').attr('min');
+  let tasaMax = $('#Tasa').attr('max');
+  let horizonteMin = $('#Horizonte').attr('min');
+  let horizonteMax = $('#Horizonte').attr('max');
+  let montoMin = $('#Monto').attr('min');
+  let montoMax = $('#Monto').attr('max');
+
   let simulacion = new SimuladorPagos(
     banco,
     tasa,
@@ -190,7 +198,7 @@ const calculoClick = (event) => {
   );
 
   let producto = new Producto(
-    banco, 
+    banco,
     nombre,
     tasa,
     horizonte ,
@@ -210,16 +218,37 @@ const calculoClick = (event) => {
       alertHTML.remove();
     }, 1000);
   } else {
-    if (tasa === 0) {
+    if (tasa < tasaMin || tasa > tasaMax) { // Tasas incorrectas
       alertMessage.className = "alert alert-danger";
       alertMessage.innerHTML =
-        "Lo sentimos pero no se tienen créditos a tasa cero.";
+        `Tasa mínima: ${tasaMin} y tasa máxima: ${tasaMax}`;
       form.append(alertMessage);
       // Eliminamos la alerta
       const alertHTML = $('.alert')[0];
       setTimeout(function () {
         alertHTML.remove();
-      }, 1000);
+      }, 1500);
+    } else if (horizonte < horizonteMin || horizonte > horizonteMax) { // Plazos incorrectos
+      console.log('???');
+      alertMessage.className = "alert alert-danger";
+      alertMessage.innerHTML =
+        `Plazo mínimo: ${horizonteMin} y plazo máximo: ${horizonteMax}`;
+      form.append(alertMessage);
+      // Eliminamos la alerta
+      const alertHTML = $('.alert')[0];
+      setTimeout(function () {
+        alertHTML.remove();
+      }, 1500);
+    } else if (monto < montoMin || monto > montoMax) { // Montos incorrectos
+      alertMessage.className = "alert alert-danger";
+      alertMessage.innerHTML =
+        `Monto mínimo: ${montoMin} y monto máximo: ${montoMax}`;
+      form.append(alertMessage);
+      // Eliminamos la alerta
+      const alertHTML = $('.alert')[0];
+      setTimeout(function () {
+        alertHTML.remove();
+      }, 1500);
     } else {
       totalPayment = simulacion.totalPayment();
 
@@ -257,7 +286,7 @@ $(document).ready(function () {
   const URL = "https://rickandmortyapi.com/api/character";
   results_get = [];
   $.ajax({
-    url: URL, 
+    url: URL,
     async: true,
     dataType: 'json',
     success: function(data) {
@@ -293,27 +322,117 @@ $(document).ready(function () {
   producto_dropdown.empty();
   producto_dropdown.append('<option selected="true" disabled>Seleccionar Producto</option>');
 
+  productosJS = [];
   $.getJSON(URL_BANCOS, (data) => {
+    productosJS.push(data);
+
     $.each(data, (key, entry) => {
       banco_dropdown.append($('<option></option>').attr('value', entry.abbreviation).text(entry.name));
     });
   });
 
+  // Cambio de banco
   $('#Banco').change(() => {
-    $.getJSON(URL_BANCOS, (data) => {
-      let banco = $('#Banco').val();
-      producto_dropdown.empty();
-      producto_dropdown.append('<option selected="true" disabled>Seleccionar Producto</option>');
-      $.each(data, (key, entry) => {
-        if (entry.name === banco) {
-          $.each(entry.productos, (key, product) => {
-            producto_dropdown.append($('<option></option>').attr('value', product.abbreviation).text(key));
-          });
-        }
-      });
+    let bancos =  productosJS[0];
+    let banco = $('#Banco').val();
+    let producto = $('#Producto');
+    // Se habilitan las opciones
+    producto.prop('disabled', false);
+    // Limpiamos las opciones
+    producto_dropdown.empty();
+    producto_dropdown.append('<option selected="true" disabled>Seleccionar Producto</option>');
+
+    $.each(bancos, (key, entry) => {
+      if (entry.name === banco) {
+        // Agregamos los productos
+        $.each(entry.productos, (key, product) => {
+          producto_dropdown.append($('<option></option>').attr('value', product.abbreviation).text(key));
+        });
+      }
     });
   });
-  
+
+  // Cambio de producto
+  $('#Producto').change(() => {
+    let bancos = productosJS[0];
+    let banco = $('#Banco').val();
+    let producto = $('#Producto');
+    let tasa = $('#Tasa');
+    let rangoTasa = $('#RangeTasa');
+    let plazo = $('#Horizonte');
+    let rangoPlazo = $('#RangeHorizonte');
+    let monto = $('#Monto');
+    let rangoMonto = $('#RangeMonto');
+    // Se habilitan las opciones
+    tasa.prop('disabled', false);
+    plazo.prop('disabled', false);
+    monto.prop('disabled', false);
+    // Valores permitidos
+    let tasaMin = 0;
+    let tasaMax = 0;
+    let plazoMin = 0;
+    let plazoMax = 0;
+    let montoMin = 0;
+    let montoMax = 0;
+
+    $.each(bancos, (key, entry) => {
+      if (entry.name === banco) {
+        $.each(entry.productos, (key, product) => {
+          if (producto.val() === key) {
+            tasaMin = product.Tasa[0];
+            tasaMax = product.Tasa[1];
+            plazoMin = product.Plazo[0];
+            plazoMax = product.Plazo[1];
+            montoMin = product.Monto[0];
+            montoMax = product.Monto[1];
+          }
+        });
+      }
+    });
+
+    tasa.prop({'min': tasaMin, 'max': tasaMax, 'value': tasaMin});
+    plazo.prop({'min': plazoMin, 'max': plazoMax, 'value': plazoMin});
+    monto.prop({'min': montoMin, 'max': montoMax, 'value': montoMax});
+    rangoTasa.prop({'disabled': false, 'min': tasaMin, 'max': tasaMax, 'value': tasaMin});
+    rangoPlazo.prop({'disabled': false, 'min': plazoMin, 'max': plazoMax, 'value': plazoMin});
+    rangoMonto.prop({'disabled': false, 'min': montoMin, 'max': montoMax, 'value': montoMax});
+  });
+
+  // Cambios en rangos
+  $('#Tasa').change(() => {
+    let rangoTasa = $('#RangeTasa');
+    let tasa = $('#Tasa');
+    rangoTasa.prop({'value': tasa.val()});
+  });
+
+  $('#RangeTasa').change(() => {
+    let rangoTasa = $('#RangeTasa');
+    let tasa = $('#Tasa');
+    tasa.prop({'value': rangoTasa.val()});
+  });
+
+  $('#Horizonte').change(() => {
+    let rangoPlazo = $('#RangeHorizonte');
+    let plazo = $('#Horizonte');
+    rangoPlazo.prop({'value': plazo.val()});
+  });
+  $('#RangeHorizonte').change(() => {
+    let rangoPlazo = $('#RangeHorizonte');
+    let plazo = $('#Horizonte')
+    plazo.prop({'value': rangoPlazo.val()});
+  });
+
+  $('#Monto').change(() => {
+    let rangoMonto = $('#RangeMonto');
+    let monto = $('#Monto')
+    rangoMonto.prop({'value': monto.val()});
+  });
+  $('#RangeMonto').change(() => {
+    let rangoMonto = $('#RangeMonto');
+    let monto = $('#Monto')
+    monto.prop({'value': rangoMonto.val()});
+  });
+
 });
 
 
